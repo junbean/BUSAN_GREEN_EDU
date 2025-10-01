@@ -34,10 +34,6 @@ public class BoardService {
     }
 
     public boolean createBoard(BoardDto boardDto, String username) {
-        System.out.println(username);
-        System.out.println(boardDto.getTitle());
-        System.out.println(boardDto.getContent());
-        System.out.println(LocalDateTime.now());
         try {
             Board board = Board.builder()
                     .title(boardDto.getTitle())

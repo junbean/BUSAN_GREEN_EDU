@@ -168,3 +168,36 @@ public class MainController {
     // 글 삭제
 
 }
+
+/*
+
+-- 사용자 테이블 : edu_board_user
+-- 컬럼 : username, password, name, email, createdAt ... 이정도?
+CREATE TABLE edu_board_user (
+	username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+	PRIMARY KEY (username)
+);
+
+select * from edu_board_user;
+
+
+-- 게시글 테이블 : edu_board
+-- 컬럼 : id, title, content, writer, createdAt
+CREATE TABLE edu_board (
+	id BIGINT NOT NULL AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    writer VARCHAR(100) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+    CONSTRAINT fk_edu_board_writer FOREIGN KEY(writer) REFERENCES edu_board_user(username) ON DELETE CASCADE
+);
+
+select * from edu_board;
+
+commit;
+
+ */
