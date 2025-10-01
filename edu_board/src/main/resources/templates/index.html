@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>홈</title>
+</head>
+<body>
+    <h1>home</h1>
+    <a href="/board">게시판</a>
+
+    <div th:if="${session.loginUser}">
+        <p th:text="'환영합니다, ' + ${session.loginUser.username} + '님'"></p>
+        <a href="/logout">로그아웃</a>
+    </div>
+
+    <div th:unless="${session.loginUser}">
+        <a href="/loginUserForm">로그인</a><br>
+        <a href="/createUserForm">회원가입</a><br>
+    </div>
+</body>
+</html>
