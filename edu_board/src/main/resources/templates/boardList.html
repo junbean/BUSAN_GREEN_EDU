@@ -5,9 +5,17 @@
     <title>게시판</title>
 </head>
 <body>
-  <h1>게시판</h1>
+<h1>게시판</h1>
+  <div th:if="${session.loginUser}">
+    <a th:text="'환영합니다 ' + ${session.loginUser.username} + '님'"></a> | <a href="/logout">로그아웃</a>
+  </div>
+  <div th:unless="${session.loginUser}">
+    <a href="/loginUserForm">로그인</a> | <a href="/createUserForm">회원가입</a>
+  </div>
+
   <hr>
-  <input type="button" onclick="location.href='/board/write'" value="글 작성하기"/>
+
+  <input type="button" onclick="location.href='/writeForm'" value="글 작성하기"/>
   <table border="1">
     <thead>
       <tr>
@@ -19,11 +27,9 @@
     </thead>
     <tbody>
     <tr th:each="board : ${boardList}">
-      <td th:text="${board.boardId}"></td>
+      <td th:text="${board.id}"></td>
       <td>
-        <a th:href="@{'/detail?id=' + ${board.boardId}}"
-           th:text="${board.title}">
-        </a>
+        <a th:href="@{/{id} (id=${board.id})}" th:text="${board.title}"></a>
       </td>
       <td th:text="${board.writer}"></td>
       <td th:text="${board.createdAt}"></td>

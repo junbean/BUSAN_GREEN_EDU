@@ -1,5 +1,6 @@
 package com.example.edu_board.controller;
 
+import com.example.edu_board.dto.BoardDto;
 import com.example.edu_board.dto.CreateUserDto;
 import com.example.edu_board.dto.LoginUserDto;
 import com.example.edu_board.entity.Board;
@@ -22,12 +23,6 @@ import java.util.List;
 public class MainController {
     private final UserService userService;
     private final BoardService boardService;
-
-    // 메인 화면
-    @GetMapping("/")
-    public String home() {
-        return "index";
-    }
 
     // 유저 생성 폼
     @GetMapping("/createUserForm")
@@ -79,35 +74,96 @@ public class MainController {
         return "redirect:/";
     }
 
-    // 게시판 - 페이징 적용
-    @GetMapping("board")
-    public String board(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model,
-            HttpSession session
-    ) {
-        List<Board> boards =  boardService.getBoardList();
-        model.addAttribute("boards", boards);
-        return "board";
+    // 메인 화면 - 게시판
+    @GetMapping("/")
+    public String home(Model model) {
+        List<Board> boardList =  boardService.getBoardList();
+        model.addAttribute("boardList", boardList);
+        return "boardList";
     }
 
     // 글 상세 폼
-    @GetMapping("board/{id}")
-    public String detailBoard(
-            @PathVariable Long id,
-            Model model
-    ) {
+    @GetMapping("/{id}")
+    public String boardDetail(@PathVariable Long id, Model model) {
         Board board = boardService.getBoardById(id);
         model.addAttribute("board", board);
-        return "board/detail";
+        return "boardDetail";
     }
 
     // 글 작성 폼
+    @GetMapping("/writeForm")
+    public String boardWriteForm(HttpSession session, Model model) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if(loginUser == null) {
+            System.out.println("not login user");
+            return "redirect:/";
+        }
+
+        model.addAttribute("username", loginUser.getUsername());
+        return "boardWrite";
+    }
+
     // 글 작성
+    @PostMapping("/write")
+    public String boardWrite(
+            @ModelAttribute BoardDto boardDto,
+            HttpSession session
+    ) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if(loginUser == null) {
+            System.out.println("not login user");
+            return "redirect:/";
+        }
+
+        boolean isCreate = boardService.createBoard(boardDto, loginUser.getUsername());
+        if(isCreate) {
+            return "redirect:/";
+        } else {
+            return "redirect:/writeForm";
+        }
+    }
 
     // 글 수정 폼
+    @GetMapping("/modify/{id}")
+    public String boardModifyForm(
+            @PathVariable Long id,
+            HttpSession session,
+            Model model
+    ) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if(loginUser == null) {
+            System.out.println("not login user");
+            return "redirect:/";
+        }
+
+        Board board = boardService.getBoardById(id);
+        model.addAttribute("board", board);
+        return "boardModify";
+    }
     // 글 수정
+    @PostMapping("/modify/{id}")
+    public String boardModify(
+            @PathVariable Long id,
+            @ModelAttribute BoardDto boardDto,
+            HttpSession session
+    ) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if(loginUser == null) {
+            System.out.println("not login user");
+            return "redirect:/";
+        }
+
+        boolean isModify = boardService.modifyBoard(boardDto);
+        if(isModify) {
+            return "redirect:/";
+        } else {
+            return "redirect:/modify/" + boardDto.getId();
+        }
+    }
 
     // 글 삭제
 

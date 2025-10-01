@@ -34,6 +34,10 @@ public class BoardService {
     }
 
     public boolean createBoard(BoardDto boardDto, String username) {
+        System.out.println(username);
+        System.out.println(boardDto.getTitle());
+        System.out.println(boardDto.getContent());
+        System.out.println(LocalDateTime.now());
         try {
             Board board = Board.builder()
                     .title(boardDto.getTitle())
@@ -43,8 +47,10 @@ public class BoardService {
                     .build();
 
             boardRepository.save(board);
+            System.out.println("create board");
             return true;
         } catch (Exception e) {
+            System.out.println("not create board");
             return false;
         }
     }
@@ -52,10 +58,11 @@ public class BoardService {
     public boolean modifyBoard(BoardDto boardDto) {
         try {
             Board board = Board.builder()
+                    .id(boardDto.getId())
                     .title(boardDto.getTitle())
                     .content(boardDto.getContent())
                     .writer(boardDto.getWriter())
-                    .createdAt(LocalDateTime.now())
+                    .createdAt(boardDto.getCreatedAt())
                     .build();
 
             boardRepository.save(board);
